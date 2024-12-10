@@ -105,6 +105,7 @@ export default {
       isPlaying: false,
       shuffleMode: false,
       liked: false,
+      imageCache: {},
     };
   },
   emits: ['loaded'],
@@ -272,9 +273,7 @@ export default {
       this.barWidthPercent = 0;
     },
     setAudioSrc() {
-      this.audio = this.preloadedAudios.find(audio => {
-        return audio.src === this.currentTrack.source
-      });
+      this.audio = this.preloadedAudios.find(audio => audio.src === this.currentTrack.source);
       
       this.audio.ontimeupdate = () => {
         this.generateTime();
@@ -295,27 +294,31 @@ export default {
         this.isPlaying = false;
       }
     },
-    debounce(func, wait) {
-      let timeout;
-      return function (...args) {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(this, args), wait);
-      };
-    },
     preloadAudio(trackSource) {
       const audio = new Audio(trackSource);
       audio.preload = 'auto';
       return audio;
-    }
+    },
+    preloadImages(imageUrls) {
+      imageUrls.forEach((url) => {
+        const img = new Image();
+        img.src = url;
+        this.imageCache[url] = img;
+      });
+    },
   },
   mounted() {
-    document.addEventListener('visibilitychange', this.debounce(this.handleVisibilityChange, 300));
+    document.addEventListener('visibilitychange', this.handleVisibilityChange, 300);
     
-    this.preloadedAudios = this.tracks.map(track => this.preloadAudio(track.source));
     this.limitedAndPriority();
+
+    this.preloadedAudios = this.tracksOfToday.map(t => this.preloadAudio(t.source));
     this.currentTrack = this.tracksOfToday[0];
     this.setAudioSrc();
 
+    const coverUrls = this.tracksOfToday.map((track) => track.cover);
+    this.preloadImages(coverUrls);
+    
     setTimeout(() => {
       this.$emit('loaded');
     }, 1000); 
