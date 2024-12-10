@@ -4,7 +4,7 @@ import vue from '@vitejs/plugin-vue'
 
 export default defineConfig(({ mode }) => {
   return {
-    base: mode === 'development' ? '/' : '/2024_SW_BDP/', 
+    base: mode === 'development' ? '/' : '/test/', 
     plugins: [vue()],
     resolve: {
       alias: {
