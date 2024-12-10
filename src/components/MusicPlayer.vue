@@ -92,8 +92,9 @@ export default {
       preloadedAudios: [],
       tracksOfToday: [],
       limitedPool: [],
-      nextCount: 0,
       priorityId: 0,
+      nextCount: 0,
+      oneLimitListened: false,
       prevTracks: [],
       currentTrack: {
         cover: ' '
@@ -103,13 +104,19 @@ export default {
       barWidthPercent: 0,
       isPlaying: false,
       shuffleMode: false,
-      preTrackBtnStyle: 0.3,
       liked: false,
     };
   },
   emits: ['loaded'],
   components: {
     SvgDefs,
+  },
+  watch: {
+    "currentTrack.limited"(){
+      if(this.currentTrack.limited){
+        this.oneLimitListened = true;
+      }
+    }
   },
   methods: {
     togglePlay() {
@@ -159,8 +166,6 @@ export default {
       this.pauseAndReset();
       const prevTrackId = this.prevTracks[this.prevTracks.length - 1];
       this.currentTrack = this.findTrack(this.tracksOfToday, prevTrackId);
-      console.log(this.currentTrack);
-
       this.prevTracks.pop();
       this.setAudioSrc();
     },
@@ -173,7 +178,6 @@ export default {
       const guaranteed = 4;
       const limitedPoolCopy = JSON.parse(JSON.stringify(this.limitedPool));
       const limitedTracksId = this.limitedPool.filter(t => t.limited).map(obj => obj.id);
-      const oneLimitListened = limitedTracksId.some(id => this.prevTracks.includes(id));
 
       const selectNextTrack = (arr) => {
         const [opt1, opt2] = this.shuffleArray(arr);
@@ -184,11 +188,11 @@ export default {
         }
       };
 
-      if (!oneLimitListened && this.priorityId) {
+      if (!this.oneLimitListened && this.priorityId) {
         this.currentTrack = this.findTrack(this.limitedPool, this.priorityId);
-      } else if (this.limitedPool.length && this.nextCount < guaranteed && !oneLimitListened) {
+      } else if (this.limitedPool.length && this.nextCount < guaranteed && !this.oneLimitListened) {
         this.currentTrack = selectNextTrack(limitedPoolCopy);
-      } else if (this.limitedPool.length && this.nextCount === guaranteed && !oneLimitListened) {
+      } else if (this.limitedPool.length && this.nextCount === guaranteed && !this.oneLimitListened) {
         const randomIdx = Math.floor(Math.random() * limitedTracksId.length);
         this.currentTrack = this.findTrack(this.limitedPool, limitedTracksId[randomIdx]);
       } else {
@@ -265,38 +269,20 @@ export default {
     pauseAndReset() {
       this.audio.pause();
       this.audio.currentTime = 0;
-      this.audio.src = '';
       this.barWidthPercent = 0;
-      console.log('pause');
-      
     },
     setAudioSrc() {
-      console.log('set audio src');
-      console.log(this.isPlaying);
-      
       this.audio = this.preloadedAudios.find(audio => {
-        console.log(audio.currentSrc);
-        // console.log(this.currentTrack.source);
-        // console.log(audio.src === this.currentTrack.source);
-        
-        return audio.currentSrc === this.currentTrack.source
+        return audio.src === this.currentTrack.source
       });
-      console.log(this.currentTrack);
-      console.log(this.preloadedAudios);
-      
-      console.dir(this.audio);
       
       this.audio.ontimeupdate = () => {
         this.generateTime();
       };
       this.audio.onloadedmetadata = () => {
-        console.log('on load meta data');
-        
         this.duration = this.formatTime(this.audio.duration);
       };
       this.audio.onended = () => {
-        console.log('on ended');
-        
         this.isPlaying = true;
         this.shuffleMode ? this.nextRandomTrack() : this.audio.play();
       };
@@ -309,31 +295,24 @@ export default {
         this.isPlaying = false;
       }
     },
+    debounce(func, wait) {
+      let timeout;
+      return function (...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+      };
+    },
     preloadAudio(trackSource) {
       const audio = new Audio(trackSource);
       audio.preload = 'auto';
       return audio;
     }
   },
-  // created() {
-  //   this.audio = new Audio();
-  //   this.audio.ontimeupdate = () => {
-  //     this.generateTime();
-  //   };
-  //   this.audio.onloadedmetadata = () => {
-  //     this.duration = this.formatTime(this.audio.duration);
-  //   };
-  //   this.audio.onended = () => {
-  //     this.isPlaying = true;
-  //     this.shuffleMode ? this.nextRandomTrack() : this.setAudioSrc();
-  //   };
-  // },
   mounted() {
-    document.addEventListener('visibilitychange', this.handleVisibilityChange);
-    this.limitedAndPriority();
-
+    document.addEventListener('visibilitychange', this.debounce(this.handleVisibilityChange, 300));
+    
     this.preloadedAudios = this.tracks.map(track => this.preloadAudio(track.source));
-
+    this.limitedAndPriority();
     this.currentTrack = this.tracksOfToday[0];
     this.setAudioSrc();
 
