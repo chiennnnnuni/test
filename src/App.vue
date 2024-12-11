@@ -33,7 +33,9 @@ export default {
     async waitForAllLoaded() {
       try {
         await Promise.all([this.videoLoaded, this.musicPlayerLoaded]);
-        this.isLoading = false;
+        setTimeout(() => {
+          this.isLoading = false;
+        }, 1500);
       } catch (err) {
         console.error('Error during loading');
       }
