@@ -1,7 +1,7 @@
 <template>
   <div class="video-background">
     <video ref="video" autoplay loop muted>
-      <source src="./assets/bg.mp4" type="video/mp4">
+      <source src="@/assets/bg.mp4" type="video/mp4">
     </video>
     <MusicPlayer @loaded="onMusicPlayerLoaded"/>
     <transition name="fade">
@@ -11,8 +11,8 @@
 </template>
 
 <script>
-import MusicPlayer from './components/MusicPlayer.vue';
-import Loading from './components/Loading.vue';
+import MusicPlayer from '@/components/MusicPlayer.vue';
+import Loading from '@/components/Loading.vue';
 
 export default {
   components: {
