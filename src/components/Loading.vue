@@ -23,6 +23,7 @@
   right: 0;
   bottom: 0;
   background-color: rgba(4, 30, 66, 0.7);
+  z-index: 10;
 }
 
 .text {
