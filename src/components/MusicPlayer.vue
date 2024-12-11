@@ -329,7 +329,7 @@ export default {
     
     setTimeout(() => {
       this.$emit('loaded');
-    }, 1000); 
+    }, 1500); 
   },
   beforeDestroy() {
     document.removeEventListener('visibilitychange', this.handleVisibilityChange);
