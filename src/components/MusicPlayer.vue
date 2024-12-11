@@ -327,9 +327,7 @@ export default {
     const coverUrls = this.tracksOfToday.map((t) => t.cover);
     this.preloadImages(coverUrls);
     
-    setTimeout(() => {
-      this.$emit('loaded');
-    }, 1500); 
+    this.$emit('loaded');
   },
   beforeDestroy() {
     document.removeEventListener('visibilitychange', this.handleVisibilityChange);
