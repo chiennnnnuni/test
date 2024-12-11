@@ -199,6 +199,7 @@ export default {
       } else {
         this.currentTrack = selectNextTrack(this.tracksOfToday);
       }
+
       this.setAudioSrc();
     },
     findTrack(arr, id) {
@@ -244,20 +245,22 @@ export default {
       
       const shuffledNormalTracks = this.shuffleArray(withoutLimit);
 
-      if (withValidLimit.length || todayPriority) {
+      if (todayPriority || withValidLimit.length) {
+        let priorityPool = [];
+        if (todayPriority) {
+          this.priorityId = todayPriority.id;
+          const priorityFiller = shuffledNormalTracks.splice(0, 1)[0];
+          const idx = Math.floor(Math.random() * 2); // 0 or 1
+          priorityPool = idx === 0 ? [todayPriority, priorityFiller] : [priorityFiller, todayPriority];
+        }
+
         const fillerTracks = shuffledNormalTracks.splice(0, 19);
         this.limitedPool = this.shuffleArray([...withValidLimit, ...fillerTracks]);
+
+        this.limitedPool = [...priorityPool, ...this.limitedPool];
         this.tracksOfToday = [...this.limitedPool, ...shuffledNormalTracks];
       } else {
         this.tracksOfToday = shuffledNormalTracks;
-      }
-
-      if (todayPriority) {
-        this.priorityId = todayPriority.id;
-
-        const idx = Math.floor(Math.random() * 2); // 0 o 1
-        this.limitedPool.splice(idx, 0, todayPriority);
-        this.tracksOfToday.splice(idx, 0, todayPriority);
       }
     },
     shuffleArray(array) {
@@ -278,9 +281,14 @@ export default {
       this.audio.ontimeupdate = () => {
         this.generateTime();
       };
-      this.audio.onloadedmetadata = () => {
+      
+      if (this.audio.readyState >= 1) { // HAVE_METADATA
         this.duration = this.formatTime(this.audio.duration);
-      };
+      } else {
+        this.audio.onloadedmetadata = () => {
+            this.duration = this.formatTime(this.audio.duration);
+        };
+      }
       this.audio.onended = () => {
         this.isPlaying = true;
         this.shuffleMode ? this.nextRandomTrack() : this.audio.play();
@@ -316,7 +324,7 @@ export default {
     this.currentTrack = this.tracksOfToday[0];
     this.setAudioSrc();
 
-    const coverUrls = this.tracksOfToday.map((track) => track.cover);
+    const coverUrls = this.tracksOfToday.map((t) => t.cover);
     this.preloadImages(coverUrls);
     
     setTimeout(() => {
