@@ -310,7 +310,7 @@ export const tracks = [
   },
   {
     "id": 39,
-    "title": "親吻自己的肩膀",
+    "title": "親親自己的肩膀",
     "subTitle": "221122 펜타곤의 밤의 라디오",
     "cover": new URL('@/assets/images/39.jpg', import.meta.url).href,
     "source": new URL('@/assets/audio/39.mp3', import.meta.url).href,
@@ -343,7 +343,7 @@ export const tracks = [
   },
   {
     "id": 43,
-    "title": "I love pentagon",
+    "title": "I love PENTAGON",
     "subTitle": "180428 Simply K-Pop EP.309 ",
     "cover": new URL('@/assets/images/43.jpg', import.meta.url).href,
     "source": new URL('@/assets/audio/43.mp3', import.meta.url).href,
@@ -461,7 +461,7 @@ export const tracks = [
     "subTitle": "是享受舞台的搖滾兔子！",
     "cover": new URL('@/assets/images/57.jpg', import.meta.url).href,
     "source": new URL('@/assets/audio/57.mp3', import.meta.url).href,
-    "link": "https://youtu.be/gpogh0bDopY?si=mIXmbGWxj06nxN-5"
+    "link": "https://youtu.be/gpogh0bDopY?si=iTUg6p3P0f196CgB&t=1"
   },
   {
     "id": 58,
@@ -469,13 +469,13 @@ export const tracks = [
     "subTitle": "펜토리 - 필리핀 프로모션 비하인드!",
     "cover": new URL('@/assets/images/58.jpg', import.meta.url).href,
     "source": new URL('@/assets/audio/58.mp3', import.meta.url).href,
-    "link": "https://youtu.be/W0eWpDv_HYc?si=6GfUrpZ9EZHoJFuz&t=507",
+    "link": "https://x.com/shinwonthinkers/status/1666829073111470080",
     "limited": "夜間"
   },
   {
     "id": 59,
     "title": "YOU SEE? WE MADE IT!",
-    "subTitle": "201220 一位直播",
+    "subTitle": "201020 一位直播",
     "cover": new URL('@/assets/images/59.jpg', import.meta.url).href,
     "source": new URL('@/assets/audio/59.mp3', import.meta.url).href,
     "link": "https://weverse.io/pentagon/live/3-110666147?hl=zh-tw&begin=2240"

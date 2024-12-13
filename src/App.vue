@@ -1,7 +1,6 @@
 <template>
   <div class="video-background">
     <video ref="video" autoplay loop muted playsinline poster="@/assets/bg.jpg">
-      <source src="@/assets/bg.mp4" type="video/mp4" media="(min-width: 1200px)">
       <source src="@/assets/bg_720.mp4" type="video/mp4" media="(min-width: 768px)">
       <source src="@/assets/bg_480.mp4" type="video/mp4">
     </video>

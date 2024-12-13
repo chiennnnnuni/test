@@ -1,6 +1,8 @@
 <template>
   <div class="wrapper" id="music">
-    <div class="title">《<span class="title-spacing">今日的</span>BGM》</div>
+    <svg class="title">
+      <use xlink:href="#font-title"></use>
+    </svg>
     <div class="player">
       <div class="player__top">
         <!-- 圖片 -->
